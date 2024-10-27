@@ -58,12 +58,45 @@ fun Calculator(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     Text(
-                        text = viewModel.number.toString(),
+                        text = viewModel.number,
                         color = TextColor,
                         fontSize = 42.sp
                     )
                 }
             }
+
+            val digitButtons = (0..9).map {
+                CalcButton(
+                    text = it.toString(),
+                    textColor = TextColor,
+                    backgroundColor = DarkGray,
+                    borderColor = LightGray,
+                ) {
+                    viewModel.addDigit(it.toString())
+                }
+            }.toList()
+
+            val operationButtons = mapOf(
+                "plus" to CalcButton(
+                    text = "+",
+                    textColor = TextColor,
+                    backgroundColor = LightGray,
+                    borderColor = LightGray,
+
+                    ) {
+                    viewModel.addOperation("+")
+                },
+                "minus" to CalcButton(
+                    text = "-",
+                    textColor = TextColor,
+                    backgroundColor = LightGray,
+                    borderColor = LightGray,
+
+                    ) {
+                    viewModel.addOperation("-")
+                },
+            )
+
 
             item {
                 HorizontalDivider(
@@ -78,104 +111,81 @@ fun Calculator(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
             item {
                 val buttons = listOf(
                     CalcButton(
-                        text = "7",
+                        text = "C",
                         textColor = TextColor,
                         backgroundColor = Orange,
+                        borderColor = Orange,
+
                     ) {
-                        viewModel.addDigit("7")
+                        viewModel.clear()
                     },
                     CalcButton(
-                        text = "8",
+                        text = "√x",
                         textColor = TextColor,
                         backgroundColor = Orange,
+                        borderColor = Orange,
+
                     ) {
-                        viewModel.addDigit("8")
+                        viewModel.sqrt()
                     },
                     CalcButton(
-                        text = "9",
+                        text = "x²",
                         textColor = TextColor,
                         backgroundColor = Orange,
+                        borderColor = Orange,
+
                     ) {
-                        viewModel.addDigit("9")
+                        viewModel.power()
                     },
+                    CalcButton(
+                        text = "⌫",
+                        textColor = TextColor,
+                        backgroundColor = Orange,
+                        borderColor = Orange,
+
+                    ) {
+                        viewModel.removeLastSymbol()
+                    },
+
+                    )
+                ButtonsRow(buttons)
+            }
+
+
+            item {
+                val buttons = listOf(
+                    digitButtons[7],
+                    digitButtons[8],
+                    digitButtons[9],
                     CalcButton(
                         text = "⨯",
                         textColor = TextColor,
                         backgroundColor = Orange,
+                        borderColor = Orange,
+
                     ) {
                         viewModel.addOperation("⨯")
-                    },
-
-                    )
+                    }
+                )
                 ButtonsRow(buttons)
             }
 
             item {
                 val buttons = listOf(
-                    CalcButton(
-                        text = "4",
-                        textColor = TextColor,
-                        backgroundColor = Orange,
-                    ) {
-                        viewModel.addDigit("4")
-                    },
-                    CalcButton(
-                        text = "5",
-                        textColor = TextColor,
-                        backgroundColor = Orange,
-                    ) {
-                        viewModel.addDigit("5")
-                    },
-                    CalcButton(
-                        text = "6",
-                        textColor = TextColor,
-                        backgroundColor = Orange,
-                    ) {
-                        viewModel.addDigit("6")
-                    },
-                    CalcButton(
-                        text = "-",
-                        textColor = TextColor,
-                        backgroundColor = Orange,
-                    ) {
-                        viewModel.addOperation("-")
-                    },
-
-                    )
+                    digitButtons[4],
+                    digitButtons[5],
+                    digitButtons[6],
+                    operationButtons.getValue("minus")
+                )
                 ButtonsRow(buttons)
             }
 
             item {
                 val buttons = listOf(
-                    CalcButton(
-                        text = "1",
-                        textColor = TextColor,
-                        backgroundColor = Orange,
-                    ) {
-                        viewModel.addDigit("1")
-                    },
-                    CalcButton(
-                        text = "2",
-                        textColor = TextColor,
-                        backgroundColor = Orange,
-                    ) {
-                        viewModel.addDigit("2")
-                    },
-                    CalcButton(
-                        text = "3",
-                        textColor = TextColor,
-                        backgroundColor = Orange,
-                    ) {
-                        viewModel.addDigit("3")
-                    },
-                    CalcButton(
-                        text = "+",
-                        textColor = TextColor,
-                        backgroundColor = Orange,
-                    ) {
-                        viewModel.addOperation("+")
-                    },
-
+                    digitButtons[1],
+                    digitButtons[2],
+                    digitButtons[3],
+                    operationButtons.getValue("plus")
                 )
                 ButtonsRow(buttons)
             }
@@ -186,20 +196,18 @@ fun Calculator(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
                         text = "±",
                         textColor = TextColor,
                         backgroundColor = Orange,
+                        borderColor = Orange,
+
                     ) {
                         viewModel.changeSign()
                     },
-                    CalcButton(
-                        text = "0",
-                        textColor = TextColor,
-                        backgroundColor = Orange,
-                    ) {
-                        viewModel.addDigit("0")
-                    },
+                    digitButtons[0],
                     CalcButton(
                         text = ".",
                         textColor = TextColor,
                         backgroundColor = Orange,
+                        borderColor = Orange,
+
                     ) {
                         viewModel.addPoint()
                     },
@@ -207,6 +215,7 @@ fun Calculator(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
                         text = "=",
                         textColor = TextColor,
                         backgroundColor = Orange,
+                        borderColor = Orange,
                     ) {
                         viewModel.getResult()
                     },
@@ -236,6 +245,7 @@ fun ButtonsRow(buttons: List<CalcButton>, modifier: Modifier = Modifier) {
                 button.text,
                 button.textColor,
                 button.backgroundColor,
+                button.borderColor,
                 button.onClick
             )
         }
@@ -248,11 +258,12 @@ fun RoundButton(
     text: String,
     textColor: Color,
     backgroundColor: Color,
+    borderColor: Color,
     onClick: () -> Unit
 ) {
     Button(
         modifier = Modifier.clip(RoundedCornerShape(3)),
-        border = BorderStroke(1.dp, Black),
+        border = BorderStroke(1.dp, borderColor),
         colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
         onClick = onClick
     ) {

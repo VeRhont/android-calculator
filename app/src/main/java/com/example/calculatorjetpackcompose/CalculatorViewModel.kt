@@ -26,6 +26,22 @@ class CalculatorViewModel: ViewModel() {
         }
     }
 
+    fun power() {
+
+    }
+
+    fun sqrt() {
+
+    }
+
+    fun clear() {
+        number = "0"
+    }
+
+    fun removeLastSymbol() {
+        number = number.dropLast(1)
+    }
+
     fun changeSign() {
         if (number.startsWith("-")) {
             number = number.removePrefix("-")

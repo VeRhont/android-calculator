@@ -7,5 +7,6 @@ data class CalcButton(
     val text: String,
     val textColor: Color,
     val backgroundColor: Color,
+    val borderColor: Color,
     val onClick: () -> Unit
 )
