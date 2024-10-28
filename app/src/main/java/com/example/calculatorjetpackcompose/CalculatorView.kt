@@ -58,9 +58,11 @@ fun Calculator(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     Text(
-                        text = viewModel.number,
+                        text = viewModel.expression,
                         color = TextColor,
-                        fontSize = 42.sp
+                        fontSize = 42.sp,
+                        lineHeight = 42.sp,
+                        maxLines = 3
                     )
                 }
             }
@@ -76,96 +78,49 @@ fun Calculator(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
                 }
             }.toList()
 
-            val operationButtons = mapOf(
-                "plus" to CalcButton(
-                    text = "+",
-                    textColor = TextColor,
-                    backgroundColor = LightGray,
-                    borderColor = LightGray,
-
-                    ) {
-                    viewModel.addOperation("+")
-                },
-                "minus" to CalcButton(
-                    text = "-",
-                    textColor = TextColor,
-                    backgroundColor = LightGray,
-                    borderColor = LightGray,
-
-                    ) {
-                    viewModel.addOperation("-")
-                },
+            val operations = mapOf(
+                "+" to { viewModel.addOperation("+") },
+                "-" to { viewModel.addOperation("-") },
+                "⨯" to { viewModel.addOperation("⨯") },
+                "/" to { viewModel.addOperation("/") },
+                "C" to { viewModel.clear() },
+                "√x" to { viewModel.sqrt() },
+                "x²" to { viewModel.power() },
+                "⌫" to { viewModel.removeLastSymbol() }
             )
+
+            val operationButtons = operations.map {
+                it.key to CalcButton(
+                    text = it.key,
+                    textColor = TextColor,
+                    backgroundColor = LightGray,
+                    borderColor = LightGray
+                ) {
+                    it.value()
+                }
+            }.toMap()
 
 
             item {
-                HorizontalDivider(
-                    color = LightGray,
-                    thickness = 0.5.dp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                )
+                Divider()
             }
 
             item {
                 val buttons = listOf(
-                    CalcButton(
-                        text = "C",
-                        textColor = TextColor,
-                        backgroundColor = Orange,
-                        borderColor = Orange,
-
-                    ) {
-                        viewModel.clear()
-                    },
-                    CalcButton(
-                        text = "√x",
-                        textColor = TextColor,
-                        backgroundColor = Orange,
-                        borderColor = Orange,
-
-                    ) {
-                        viewModel.sqrt()
-                    },
-                    CalcButton(
-                        text = "x²",
-                        textColor = TextColor,
-                        backgroundColor = Orange,
-                        borderColor = Orange,
-
-                    ) {
-                        viewModel.power()
-                    },
-                    CalcButton(
-                        text = "⌫",
-                        textColor = TextColor,
-                        backgroundColor = Orange,
-                        borderColor = Orange,
-
-                    ) {
-                        viewModel.removeLastSymbol()
-                    },
-
-                    )
+                    operationButtons.getValue("C"),
+                    operationButtons.getValue("√x"),
+                    operationButtons.getValue("x²"),
+                    operationButtons.getValue("⌫")
+                )
                 ButtonsRow(buttons)
             }
-
 
             item {
                 val buttons = listOf(
                     digitButtons[7],
                     digitButtons[8],
                     digitButtons[9],
-                    CalcButton(
-                        text = "⨯",
-                        textColor = TextColor,
-                        backgroundColor = Orange,
-                        borderColor = Orange,
-
-                    ) {
-                        viewModel.addOperation("⨯")
-                    }
+                    operationButtons.getValue("⨯")
                 )
                 ButtonsRow(buttons)
             }
@@ -175,7 +130,7 @@ fun Calculator(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
                     digitButtons[4],
                     digitButtons[5],
                     digitButtons[6],
-                    operationButtons.getValue("minus")
+                    operationButtons.getValue("-")
                 )
                 ButtonsRow(buttons)
             }
@@ -185,7 +140,7 @@ fun Calculator(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
                     digitButtons[1],
                     digitButtons[2],
                     digitButtons[3],
-                    operationButtons.getValue("plus")
+                    operationButtons.getValue("+")
                 )
                 ButtonsRow(buttons)
             }
@@ -193,37 +148,26 @@ fun Calculator(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
             item {
                 val buttons = listOf(
                     CalcButton(
-                        text = "±",
+                        text = "=",
                         textColor = TextColor,
                         backgroundColor = Orange,
-                        borderColor = Orange,
-
+                        borderColor = Orange
                     ) {
-                        viewModel.changeSign()
+                        viewModel.getResult()
                     },
                     digitButtons[0],
                     CalcButton(
                         text = ".",
                         textColor = TextColor,
-                        backgroundColor = Orange,
-                        borderColor = Orange,
-
+                        backgroundColor = DarkGray,
+                        borderColor = LightGray
                     ) {
                         viewModel.addPoint()
                     },
-                    CalcButton(
-                        text = "=",
-                        textColor = TextColor,
-                        backgroundColor = Orange,
-                        borderColor = Orange,
-                    ) {
-                        viewModel.getResult()
-                    },
+                    operationButtons.getValue("/")
                 )
                 ButtonsRow(buttons)
             }
-
-
         }
     }
 }
@@ -275,4 +219,16 @@ fun RoundButton(
         )
 
     }
+}
+
+
+@Composable
+fun Divider() {
+    HorizontalDivider(
+        color = LightGray,
+        thickness = 0.5.dp,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp)
+    )
 }
