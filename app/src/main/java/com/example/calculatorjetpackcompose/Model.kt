@@ -5,36 +5,43 @@ class Model {
     companion object {
 
         fun calculateResult(expression: String): Double {
-            return f(expression)
+            // Rounding a number to 6 decimal places
+            val n = 1000000.0
+            val result = Math.round(splitAndCalculate(expression) * n) / n
+
+            return result
         }
 
-        private fun f(str: String, index: Int = 0, seq: String = "+-*/"): Double {
+        private fun splitAndCalculate(str: String, index: Int = 0, seq: String = "+-⨯/"): Double {
 
-            if ((index == seq.length) || (!str.contains(Regex("[+*/-]")))) {
+            if ((index == seq.length) || (!str.contains(Regex("[+⨯/-]")))) {
                 return str.toDouble()
             }
 
             val elements = mutableListOf<Double>()
             str.split(seq[index]).forEach {
-                elements.add(f(it, index + 1))
+                elements.add(splitAndCalculate(it, index + 1))
             }
 
             when (seq[index]) {
                 '+' -> {
                     return elements.reduce { a, b -> a + b }
                 }
+
                 '-' -> {
-                    return elements.reduce { a, b -> a - b}
+                    return elements.reduce { a, b -> a - b }
                 }
-                '*' -> {
+
+                '⨯' -> {
                     return elements.reduce { a, b -> a * b }
                 }
+
                 '/' -> {
                     return elements.reduce { a, b -> a / b }
                 }
+
                 else -> throw Exception("Operations failed")
             }
-
         }
     }
 }

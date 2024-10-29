@@ -4,12 +4,14 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -21,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.calculatorjetpackcompose.ui.theme.*
@@ -44,28 +47,36 @@ fun Calculator(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
 
     ) {
 
-        LazyColumn(
+        Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(0.dp, 0.dp, 0.dp, 20.dp)
-                        .height(200.dp)
-                        .background(Orange)
-                        .padding(30.dp),
-                    contentAlignment = Alignment.BottomEnd
-                ) {
-                    Text(
-                        text = viewModel.expression,
-                        color = TextColor,
-                        fontSize = 42.sp,
-                        lineHeight = 42.sp,
-                        maxLines = 3
-                    )
-                }
+
+            Text(
+                text = viewModel.lastExpression,
+                color = LightGray,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 15.dp),
+                overflow = TextOverflow.Clip,
+                softWrap = false
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(160.dp)
+                    .padding(30.dp),
+                contentAlignment = Alignment.BottomEnd
+            ) {
+
+                Text(
+                    text = viewModel.expression,
+                    color = TextColor,
+                    fontSize = 42.sp,
+                    lineHeight = 42.sp,
+                    maxLines = 3
+                )
             }
+
 
             val digitButtons = (0..9).map {
                 CalcButton(
@@ -101,73 +112,70 @@ fun Calculator(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
             }.toMap()
 
 
-            item {
-                Divider()
-            }
+            Divider()
 
-            item {
-                val buttons = listOf(
-                    operationButtons.getValue("C"),
-                    operationButtons.getValue("√x"),
-                    operationButtons.getValue("x²"),
-                    operationButtons.getValue("⌫")
-                )
-                ButtonsRow(buttons)
-            }
 
-            item {
-                val buttons = listOf(
-                    digitButtons[7],
-                    digitButtons[8],
-                    digitButtons[9],
-                    operationButtons.getValue("⨯")
-                )
-                ButtonsRow(buttons)
-            }
+            var buttons = listOf(
+                operationButtons.getValue("C"),
+                operationButtons.getValue("√x"),
+                operationButtons.getValue("x²"),
+                operationButtons.getValue("⌫")
+            )
+            ButtonsRow(buttons)
 
-            item {
-                val buttons = listOf(
-                    digitButtons[4],
-                    digitButtons[5],
-                    digitButtons[6],
-                    operationButtons.getValue("-")
-                )
-                ButtonsRow(buttons)
-            }
 
-            item {
-                val buttons = listOf(
-                    digitButtons[1],
-                    digitButtons[2],
-                    digitButtons[3],
-                    operationButtons.getValue("+")
-                )
-                ButtonsRow(buttons)
-            }
+            buttons = listOf(
+                digitButtons[7],
+                digitButtons[8],
+                digitButtons[9],
+                operationButtons.getValue("⨯")
+            )
+            ButtonsRow(buttons)
 
-            item {
-                val buttons = listOf(
-                    CalcButton(
-                        text = "=",
-                        textColor = TextColor,
-                        backgroundColor = Orange,
-                        borderColor = Orange
-                    ) {
-                        viewModel.getResult()
-                    },
-                    digitButtons[0],
-                    CalcButton(
-                        text = ".",
-                        textColor = TextColor,
-                        backgroundColor = DarkGray,
-                        borderColor = LightGray
-                    ) {
-                        viewModel.addPoint()
-                    },
-                    operationButtons.getValue("/")
-                )
-                ButtonsRow(buttons)
-            }
+
+
+            buttons = listOf(
+                digitButtons[4],
+                digitButtons[5],
+                digitButtons[6],
+                operationButtons.getValue("-")
+            )
+            ButtonsRow(buttons)
+
+
+
+            buttons = listOf(
+                digitButtons[1],
+                digitButtons[2],
+                digitButtons[3],
+                operationButtons.getValue("+")
+            )
+            ButtonsRow(buttons)
+
+
+
+            buttons = listOf(
+                CalcButton(
+                    text = "=",
+                    textColor = TextColor,
+                    backgroundColor = Orange,
+                    borderColor = Orange
+                ) {
+                    viewModel.showResult()
+                },
+                digitButtons[0],
+                CalcButton(
+                    text = ".",
+                    textColor = TextColor,
+                    backgroundColor = DarkGray,
+                    borderColor = LightGray
+                ) {
+                    viewModel.addPoint()
+                },
+                operationButtons.getValue("/")
+            )
+            ButtonsRow(buttons)
+
         }
     }
 }
@@ -177,7 +185,7 @@ fun Calculator(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
 fun ButtonsRow(buttons: List<CalcButton>, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -225,8 +233,8 @@ fun RoundButton(
 @Composable
 fun Divider() {
     HorizontalDivider(
-        color = LightGray,
-        thickness = 0.5.dp,
+        color = TextColor,
+        thickness = 0.7.dp,
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)
