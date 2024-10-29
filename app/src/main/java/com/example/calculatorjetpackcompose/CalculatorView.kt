@@ -30,7 +30,11 @@ import com.example.calculatorjetpackcompose.ui.theme.*
 
 
 @Composable
-fun Calculator(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
+fun Calculator(
+    viewModel: CalculatorViewModel,
+    buttonsData: ButtonsData,
+    modifier: Modifier = Modifier
+) {
 
     Box(
         modifier = modifier
@@ -53,7 +57,7 @@ fun Calculator(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
 
             Text(
                 text = viewModel.lastExpression,
-                color = LightGray,
+                color = TextColor,
                 fontSize = 20.sp,
                 modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 15.dp),
                 overflow = TextOverflow.Clip,
@@ -77,105 +81,20 @@ fun Calculator(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
                 )
             }
 
-
-            val digitButtons = (0..9).map {
-                CalcButton(
-                    text = it.toString(),
-                    textColor = TextColor,
-                    backgroundColor = DarkGray,
-                    borderColor = LightGray,
-                ) {
-                    viewModel.addDigit(it.toString())
-                }
-            }.toList()
-
-            val operations = mapOf(
-                "+" to { viewModel.addOperation("+") },
-                "-" to { viewModel.addOperation("-") },
-                "⨯" to { viewModel.addOperation("⨯") },
-                "/" to { viewModel.addOperation("/") },
-                "C" to { viewModel.clear() },
-                "√x" to { viewModel.sqrt() },
-                "x²" to { viewModel.power() },
-                "⌫" to { viewModel.removeLastSymbol() }
-            )
-
-            val operationButtons = operations.map {
-                it.key to CalcButton(
-                    text = it.key,
-                    textColor = TextColor,
-                    backgroundColor = LightGray,
-                    borderColor = LightGray
-                ) {
-                    it.value()
-                }
-            }.toMap()
-
-
             Divider()
 
+            val buttons = buttonsData.getButtonsData()
 
-            var buttons = listOf(
-                operationButtons.getValue("C"),
-                operationButtons.getValue("√x"),
-                operationButtons.getValue("x²"),
-                operationButtons.getValue("⌫")
-            )
-            ButtonsRow(buttons)
-
-
-            buttons = listOf(
-                digitButtons[7],
-                digitButtons[8],
-                digitButtons[9],
-                operationButtons.getValue("⨯")
-            )
-            ButtonsRow(buttons)
-
-
-
-            buttons = listOf(
-                digitButtons[4],
-                digitButtons[5],
-                digitButtons[6],
-                operationButtons.getValue("-")
-            )
-            ButtonsRow(buttons)
-
-
-
-            buttons = listOf(
-                digitButtons[1],
-                digitButtons[2],
-                digitButtons[3],
-                operationButtons.getValue("+")
-            )
-            ButtonsRow(buttons)
-
-
-
-            buttons = listOf(
-                CalcButton(
-                    text = "=",
-                    textColor = TextColor,
-                    backgroundColor = Orange,
-                    borderColor = Orange
-                ) {
-                    viewModel.showResult()
-                },
-                digitButtons[0],
-                CalcButton(
-                    text = ".",
-                    textColor = TextColor,
-                    backgroundColor = DarkGray,
-                    borderColor = LightGray
-                ) {
-                    viewModel.addPoint()
-                },
-                operationButtons.getValue("/")
-            )
-            ButtonsRow(buttons)
-
+            for (i in 0..buttons.size - 1 step 4) {
+                ButtonsRow(
+                    listOf(
+                        buttons[i],
+                        buttons[i + 1],
+                        buttons[i + 2],
+                        buttons[i + 3]
+                    )
+                )
+            }
         }
     }
 }

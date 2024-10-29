@@ -13,6 +13,7 @@ class CalculatorViewModel : ViewModel() {
         private set
 
     var lastExpression by mutableStateOf("")
+        private set
 
     private fun getResult() = Model.calculateResult(expression)
 
@@ -60,7 +61,11 @@ class CalculatorViewModel : ViewModel() {
     }
 
     fun showResult() {
-        val result = getResult().toString()
+        var result = getResult().toString()
+
+        if (result.contains(".") && (result.endsWith("0"))) {
+            result = result.removeSuffix(".0")
+        }
 
         showLastExpression("$expression=$result")
         expression = result

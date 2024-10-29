@@ -23,13 +23,13 @@ class MainActivity : ComponentActivity() {
             CalculatorJetpackComposeTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
+                    val buttonsData = ButtonsData(viewModel)
 
                     Calculator(
                         viewModel,
+                        buttonsData,
                         modifier = Modifier.padding(innerPadding)
                     )
-
-
                 }
             }
         }
