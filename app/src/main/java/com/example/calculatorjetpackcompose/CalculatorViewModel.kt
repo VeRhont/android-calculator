@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import kotlin.math.exp
 import kotlin.math.pow
 
 
@@ -15,7 +16,7 @@ class CalculatorViewModel : ViewModel() {
     var lastExpression by mutableStateOf("")
         private set
 
-    private fun getResult() = Model.calculateResult(expression)
+    private fun getResult() = Model.getCalculatedResult(expression)
 
     fun addDigit(digit: String) {
         if (expression.startsWith("0")) {
@@ -31,13 +32,13 @@ class CalculatorViewModel : ViewModel() {
     }
 
     fun power() {
-        val result = getResult().pow(2.0)
+        val result = Model.getSquare(expression)
         showLastExpression("${getResult()}²=$result")
-        expression = result.toString()
+        expression = result
     }
 
     fun sqrt() {
-        val result = kotlin.math.sqrt(getResult()).toString()
+        val result = Model.getSqrt(expression)
         showLastExpression("√${getResult()}=$result")
         expression = result
     }
@@ -56,16 +57,12 @@ class CalculatorViewModel : ViewModel() {
         }
     }
 
-    private fun showLastExpression(str: String) {
-        lastExpression = str
+    private fun showLastExpression(lastResult: String) {
+        lastExpression = lastResult
     }
 
     fun showResult() {
-        var result = getResult().toString()
-
-        if (result.contains(".") && (result.endsWith("0"))) {
-            result = result.removeSuffix(".0")
-        }
+        val result = getResult()
 
         showLastExpression("$expression=$result")
         expression = result

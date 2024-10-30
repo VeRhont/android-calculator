@@ -8,7 +8,7 @@ import com.example.calculatorjetpackcompose.ui.theme.TextColor
 
 class ButtonsData(viewModel: CalculatorViewModel) {
 
-    val digitButtons = (0..9).map {
+    private val digitButtons = (0..9).map {
         CalcButton(
             text = it.toString(),
             textColor = TextColor,
@@ -19,7 +19,7 @@ class ButtonsData(viewModel: CalculatorViewModel) {
         }
     }.toList()
 
-    val operations = mapOf(
+    private val operations = mapOf(
         "+" to { viewModel.addOperation("+") },
         "-" to { viewModel.addOperation("-") },
         "⨯" to { viewModel.addOperation("⨯") },
@@ -30,7 +30,7 @@ class ButtonsData(viewModel: CalculatorViewModel) {
         "⌫" to { viewModel.removeLastSymbol() }
     )
 
-    val operationButtons = operations.map {
+    private val operationButtons = operations.map {
         it.key to CalcButton(
             text = it.key,
             textColor = TextColor,
@@ -41,7 +41,7 @@ class ButtonsData(viewModel: CalculatorViewModel) {
         }
     }.toMap()
 
-    val buttons = listOf(
+    private val buttons = listOf(
         operationButtons.getValue("C"),
         operationButtons.getValue("√x"),
         operationButtons.getValue("x²"),
