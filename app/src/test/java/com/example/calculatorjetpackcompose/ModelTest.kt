@@ -118,44 +118,62 @@ class ModelTest {
     }
 
     @Test
-    fun `square root`() {
+    fun `square root (int)`() {
         val expression = "16"
         val expected = "4"
 
-        val actual = Model.getSqrt(expression)
+        val actual = Model.power(expression, 0.5)
 
         assertEquals(expected, actual)
     }
 
+    @Test
+    fun `square root (double)`() {
+        val expression = "2.25"
+        val expected = "1.5"
+
+        val actual = Model.power(expression, 0.5)
+
+        assertEquals(expected, actual)
+    }
 
     @Test
-    fun `squaring`() {
+    fun `power 2 (int)`() {
         val expression = "5"
         val expected = "25"
 
-        val actual = Model.getSquare(expression)
+        val actual = Model.power(expression, 2.0)
 
         assertEquals(expected, actual)
     }
 
-//
-//    @Test
-//    fun `negative number`() {
-//        val expression = "-2+1"
-//        val expected = "-1"
-//
-//        val actual = Model.getCalculatedResult(expression)
-//
-//        assertEquals(expected, actual)
-//    }
-//
-//    @Test
-//    fun `divide by zero`() {
-//        val expression = "1/0"
-//        val expected = "0"
-//
-//        val actual = Model.getCalculatedResult(expression)
-//
-//        assertEquals(expected, actual)
-//    }
+    @Test
+    fun `power 2 (double)`() {
+        val expression = "1.5"
+        val expected = "2.25"
+
+        val actual = Model.power(expression, 2.0)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `zero division 1`() {
+        val expression = "1/0"
+        val expected = "You can't divide by zero"
+
+        val actual = Model.getCalculatedResult(expression)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `zero division 2`() {
+        val expression = "0/1"
+        val expected = "0"
+
+        val actual = Model.getCalculatedResult(expression)
+
+        assertEquals(expected, actual)
+    }
 }

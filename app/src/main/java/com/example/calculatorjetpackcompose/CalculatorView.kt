@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -35,7 +33,6 @@ fun Calculator(
     buttonsData: ButtonsData,
     modifier: Modifier = Modifier
 ) {
-
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -50,11 +47,9 @@ fun Calculator(
             .padding(32.dp)
 
     ) {
-
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-
             Text(
                 text = viewModel.lastExpression,
                 color = TextColor,
@@ -71,7 +66,6 @@ fun Calculator(
                     .padding(30.dp),
                 contentAlignment = Alignment.BottomEnd
             ) {
-
                 Text(
                     text = viewModel.expression,
                     color = TextColor,
@@ -85,7 +79,7 @@ fun Calculator(
 
             val buttons = buttonsData.getButtonsData()
 
-            for (i in 0..buttons.size - 1 step 4) {
+            for (i in buttons.indices step 4) {
                 ButtonsRow(
                     listOf(
                         buttons[i],
@@ -109,9 +103,7 @@ fun ButtonsRow(buttons: List<CalcButton>, modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        for (i in 0..buttons.size - 1) {
-            val button = buttons[i]
-
+        for (button in buttons) {
             RoundButton(
                 button.text,
                 button.textColor,
@@ -138,13 +130,11 @@ fun RoundButton(
         colors = ButtonDefaults.buttonColors(containerColor = backgroundColor),
         onClick = onClick
     ) {
-
         Text(
             text = text,
             color = textColor,
             fontSize = 32.sp
         )
-
     }
 }
 

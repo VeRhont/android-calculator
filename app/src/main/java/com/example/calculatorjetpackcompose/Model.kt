@@ -10,43 +10,38 @@ class Model {
         fun getCalculatedResult(expression: String): String {
             val result = calculateResult(expression)
 
+            if (result == Double.NEGATIVE_INFINITY) {
+                return "You can't divide by zero"
+            }
+
             if (result.isInt())
                 return result.toInt().toString()
 
             return result.toString()
         }
 
-        fun getSqrt(expression: String): String {
-
+        fun power(expression: String, power: Double): String {
             var result = calculateResult(expression)
-            result = kotlin.math.sqrt(result).round(6)
+            result = result.pow(power).round(6)
 
             if (result.isInt())
                 return result.toInt().toString()
 
             return result.toString()
         }
-
-        fun getSquare(expression: String): String {
-
-            var result = calculateResult(expression)
-            result = result.pow(2.0).round(6)
-
-            if (result.isInt())
-                return result.toInt().toString()
-
-            return result.toString()
-        }
-
 
         private fun calculateResult(expression: String): Double {
             if (expression.isEmpty())
                 return 0.0
 
-            return splitAndCalculate(expression).round(6)
+            val result = splitAndCalculate(expression)
+            if (result == Double.NEGATIVE_INFINITY)
+                return result
+
+            return result.round(6)
         }
 
-        private fun splitAndCalculate(str: String, index: Int = 0, seq: String = "-+⨯/"): Double {
+        private fun splitAndCalculate(str: String, index: Int = 0, seq: String = "+-⨯/"): Double {
 
             if ((index == seq.length) || (!str.contains(Regex("[+⨯/-]"))))
                 return str.toDouble()
@@ -60,7 +55,12 @@ class Model {
                 '+' -> return elements.reduce { a, b -> a + b }
                 '-' -> return elements.reduce { a, b -> a - b }
                 '⨯' -> return elements.reduce { a, b -> a * b }
-                '/' -> return elements.reduce { a, b -> a / b }
+                '/' -> {
+                    if (elements.contains(0.0) && (elements[0] != 0.0))
+                        return Double.NEGATIVE_INFINITY
+
+                    return elements.reduce { a, b -> a / b }
+                }
                 else -> throw Exception("Operations failed")
             }
         }
