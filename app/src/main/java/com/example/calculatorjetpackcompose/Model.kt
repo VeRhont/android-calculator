@@ -34,7 +34,8 @@ class Model {
             if (expression.isEmpty())
                 return 0.0
 
-            val result = splitAndCalculate(expression)
+            val expressionChecked = if (expression[0] == '-') "0$expression" else expression
+            val result = splitAndCalculate(expressionChecked)
             if (result == Double.NEGATIVE_INFINITY)
                 return result
 

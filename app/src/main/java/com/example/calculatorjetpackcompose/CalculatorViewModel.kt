@@ -14,10 +14,15 @@ class CalculatorViewModel : ViewModel() {
     var lastExpression by mutableStateOf("")
         private set
 
-    private fun getResult() = Model.getCalculatedResult(expression)
-
     private var isNumberFinished = false
     private var containsPoint = false
+
+    private fun getResult(): String {
+        if (!expression.last().isDigit())
+            return expression
+
+        return Model.getCalculatedResult(expression)
+    }
 
     fun addDigit(digit: String) {
         if (!containsPoint && (expression.last() == '0')) {

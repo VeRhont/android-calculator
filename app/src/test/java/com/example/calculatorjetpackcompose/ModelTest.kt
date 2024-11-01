@@ -176,4 +176,14 @@ class ModelTest {
 
         assertEquals(expected, actual)
     }
+
+    @Test
+    fun `negative number`() {
+        val expression = "-2+4"
+        val expected = "2"
+
+        val actual = Model.getCalculatedResult(expression)
+
+        assertEquals(expected, actual)
+    }
 }
